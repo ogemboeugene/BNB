@@ -16,14 +16,13 @@ class BNBRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new BNBRepository();
+        $this->repository = new BNBRepository(new BNB());
     }
 
     public function test_can_create_bnb(): void
     {
         $data = [
             'name' => 'Test BNB',
-            'description' => 'Test Description',
             'location' => 'Test Location',
             'price_per_night' => 100.00,
             'availability' => true

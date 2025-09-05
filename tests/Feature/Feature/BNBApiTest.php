@@ -44,7 +44,6 @@ class BNBApiTest extends TestCase
         
         $data = [
             'name' => 'New BNB',
-            'description' => 'Beautiful place',
             'location' => 'Paris',
             'price_per_night' => 150.00,
             'availability' => true

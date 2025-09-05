@@ -28,7 +28,7 @@ class BNBModelTest extends TestCase
     public function test_bnb_has_fillable_attributes(): void
     {
         $bnb = new BNB();
-        $expected = ['name', 'description', 'location', 'price_per_night', 'availability'];
+        $expected = ['name', 'location', 'price_per_night', 'availability'];
         
         $this->assertEquals($expected, $bnb->getFillable());
     }
@@ -45,8 +45,8 @@ class BNBModelTest extends TestCase
     {
         $bnb = BNB::factory()->create(['price_per_night' => '99.99']);
         
-        $this->assertIsFloat($bnb->price_per_night);
-        $this->assertEquals(99.99, $bnb->price_per_night);
+        $this->assertEquals('99.99', $bnb->price_per_night);
+        $this->assertIsString($bnb->price_per_night); // decimal cast returns string
     }
 
     public function test_bnb_availability_is_cast_to_boolean(): void

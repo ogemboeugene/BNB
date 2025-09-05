@@ -119,14 +119,14 @@ interface BNBRepositoryInterface
      * @param string $sortBy Column to sort by
      * @param string $sortDirection Sort direction (asc|desc)
      * @param int|null $perPage Number of items per page
-     * @return LengthAwarePaginator|Collection
+     * @return LengthAwarePaginator
      */
     public function getWithFilters(
         array $filters = [],
         string $sortBy = 'created_at',
         string $sortDirection = 'desc',
         ?int $perPage = null
-    ): LengthAwarePaginator|Collection;
+    ): LengthAwarePaginator;
 
     /**
      * Check if a BNB exists by ID.

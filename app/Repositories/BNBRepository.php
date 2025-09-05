@@ -334,17 +334,15 @@ class BNBRepository implements BNBRepositoryInterface
         string $sortBy = 'created_at',
         string $sortDirection = 'desc',
         ?int $perPage = null
-    ): LengthAwarePaginator|Collection {
+    ): LengthAwarePaginator {
         $cacheKey = $this->cachePrefix . 'filtered_' . md5(serialize([$filters, $sortBy, $sortDirection, $perPage]));
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($filters, $sortBy, $sortDirection, $perPage) {
             $query = $this->buildFilterQuery($filters)->orderBy($sortBy, $sortDirection);
             
-            if ($perPage) {
-                return $query->paginate($perPage);
-            }
-
-            return $query->get();
+            // Always paginate, use default of 15 if no perPage specified
+            $perPage = $perPage ?: 15;
+            return $query->paginate($perPage);
         });
     }
 

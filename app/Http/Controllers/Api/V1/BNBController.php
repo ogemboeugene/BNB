@@ -97,9 +97,7 @@ class BNBController extends Controller
 
             Log::info('BNBs retrieved successfully', [
                 'filters' => $filters,
-                'count' => $bnbs instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator 
-                    ? $bnbs->total() 
-                    : $bnbs->count()
+                'count' => $bnbs->total()
             ]);
 
             // Return data using BNBCollection resource

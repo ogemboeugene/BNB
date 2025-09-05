@@ -31,8 +31,8 @@ class BNBCollection extends ResourceCollection
                     $this->collection->count()
                 ),
                 'current_page_items' => $this->collection->count(),
-                'available_count' => $this->collection->where('is_available', true)->count(),
-                'unavailable_count' => $this->collection->where('is_available', false)->count(),
+                'available_count' => $this->collection->where('availability', true)->count(),
+                'unavailable_count' => $this->collection->where('availability', false)->count(),
                 'average_price' => round($this->collection->avg('price_per_night'), 2),
                 'price_range' => [
                     'min' => $this->collection->min('price_per_night'),
@@ -40,11 +40,9 @@ class BNBCollection extends ResourceCollection
                 ],
             ],
             'filters' => [
-                'applied' => $request->only(['city', 'state', 'country', 'min_price', 'max_price', 'availability', 'name']),
+                'applied' => $request->only(['location', 'min_price', 'max_price', 'availability', 'name']),
                 'suggestions' => $this->when($this->collection->isNotEmpty(), [
-                    'cities' => $this->collection->pluck('city')->unique()->filter()->values(),
-                    'states' => $this->collection->pluck('state')->unique()->filter()->values(),
-                    'countries' => $this->collection->pluck('country')->unique()->filter()->values(),
+                    'locations' => $this->collection->pluck('location')->unique()->filter()->values(),
                 ], []),
             ],
         ];
