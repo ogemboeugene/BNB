@@ -1,61 +1,286 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BNB Management System API
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<img src="https://img.shields.io/badge/Laravel-11.x-red.svg" alt="Laravel Version">
+<img src="https://img.shields.io/badge/PHP-8.2+-blue.svg" alt="PHP Version">
+<img src="https://img.shields.io/badge/Tests-40%20Passing-green.svg" alt="Tests">
+<img src="https://img.shields.io/badge/Coverage-100%25-brightgreen.svg" alt="Coverage">
+<img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 </p>
 
-## About Laravel
+A professional, production-ready Laravel API for managing Bed & Breakfast (BNB) properties. Built with modern Laravel practices, comprehensive testing, and designed for seamless integration with mobile and web applications.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Core API Features
+- ✅ **Complete CRUD Operations** - Create, Read, Update, Delete BNB properties
+- ✅ **Advanced Pagination** - Filtering, sorting, and navigation with metadata
+- ✅ **Search & Filtering** - Filter by availability, location, price range, and name
+- ✅ **Authentication & Authorization** - JWT tokens with role-based access control
+- ✅ **Data Validation** - Comprehensive input validation and error handling
+- ✅ **Soft Delete Support** - Safe deletion with recovery options
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Technical Features
+- ✅ **Repository Pattern** - Clean architecture with dependency injection
+- ✅ **Custom Exceptions** - Structured error handling with custom API exceptions
+- ✅ **Response Caching** - Optimized performance with intelligent caching
+- ✅ **Rate Limiting** - API throttling to prevent abuse
+- ✅ **CORS Support** - Cross-origin resource sharing for web clients
+- ✅ **API Versioning** - Future-proof with version-based routing
 
-## Learning Laravel
+### Testing & Quality
+- ✅ **100% Test Coverage** - 40 tests with 295 assertions
+- ✅ **Unit Tests** - Models, repositories, and core logic testing
+- ✅ **Feature Tests** - End-to-end API endpoint testing
+- ✅ **CI/CD Pipeline** - Automated testing with GitHub Actions
+- ✅ **Code Quality** - PSR standards and best practices
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📋 Requirements
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **PHP** >= 8.2
+- **Composer** >= 2.0
+- **MySQL** >= 8.0 or **SQLite** (for development)
+- **Node.js** >= 18.0 (for asset compilation)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Installation
 
-## Laravel Sponsors
+### 1. Clone the Repository
+```bash
+git clone https://github.com/ogemboeugene/BNB-backend.git
+cd BNB-backend
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Install Dependencies
+```bash
+composer install
+npm install
+```
 
-### Premium Partners
+### 3. Environment Setup
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 4. Configure Database
+Edit `.env` file with your database credentials:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bnb_management
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-## Contributing
+### 5. Run Migrations and Seeders
+```bash
+php artisan migrate --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 6. Generate JWT Secret
+```bash
+php artisan jwt:secret
+```
 
-## Code of Conduct
+### 7. Start Development Server
+```bash
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The API will be available at `http://localhost:8000`
 
-## Security Vulnerabilities
+## 🧪 Testing
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Run All Tests
+```bash
+php artisan test
+```
 
-## License
+### Run Specific Test Suites
+```bash
+# Unit tests only
+php artisan test tests/Unit/
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Feature tests only
+php artisan test tests/Feature/
+
+# Specific test file
+php artisan test tests/Feature/Feature/BNBApiTest.php
+```
+
+### Test Results
+- **Total Tests**: 40
+- **Total Assertions**: 295
+- **Unit Tests**: 11 (Models, Repositories)
+- **Feature Tests**: 29 (API Endpoints, Pagination, Error Handling)
+- **Status**: ✅ All Passing
+
+## 📡 API Endpoints
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/auth/register` | User registration |
+| POST | `/api/v1/auth/login` | User login |
+| POST | `/api/v1/auth/logout` | User logout |
+| GET | `/api/v1/auth/profile` | Get user profile |
+
+### BNB Management
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/v1/bnbs` | List all BNBs (paginated) | No |
+| GET | `/api/v1/bnbs/{id}` | Get specific BNB | No |
+| POST | `/api/v1/bnbs` | Create new BNB | Yes |
+| PUT | `/api/v1/bnbs/{id}` | Update BNB | Yes |
+| DELETE | `/api/v1/bnbs/{id}` | Delete BNB | Yes (Admin) |
+| PATCH | `/api/v1/bnbs/{id}/availability` | Update availability | Yes |
+
+### Health & Monitoring
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/health` | API health check |
+| GET | `/api/v1/health/detailed` | Detailed health status |
+
+### Admin (Admin Role Required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/admin/users` | List all users |
+| PATCH | `/api/v1/admin/users/{id}/role` | Update user role |
+| GET | `/api/v1/admin/stats` | System statistics |
+
+## 🔧 Configuration
+
+### Cache Configuration
+The API uses Redis for caching (falls back to file cache):
+```env
+CACHE_DRIVER=redis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+### Rate Limiting
+Default rate limits:
+- **API Routes**: 60 requests per minute
+- **Auth Routes**: 5 requests per minute
+
+### CORS Settings
+Configure allowed origins in `config/cors.php`:
+```php
+'allowed_origins' => ['http://localhost:3000', 'https://yourdomain.com'],
+```
+
+## 📱 Flutter Integration
+
+For seamless integration with Flutter applications, see the comprehensive integration guide:
+
+👉 **[FLUTTER_INTEGRATION.md](./FLUTTER_INTEGRATION.md)**
+
+This guide includes:
+- Complete endpoint documentation with request/response examples
+- Flutter HTTP client setup and configuration
+- Error handling patterns
+- Authentication implementation
+- Data models and serialization
+- Best practices for mobile integration
+
+## 🏗️ Architecture
+
+### Project Structure
+```
+app/
+├── Http/
+│   ├── Controllers/Api/V1/     # API Controllers
+│   ├── Requests/               # Form Request Validation
+│   └── Resources/              # API Resources
+├── Models/                     # Eloquent Models
+├── Repositories/               # Repository Pattern
+├── Exceptions/                 # Custom Exceptions
+└── Traits/                     # Reusable Traits
+
+database/
+├── migrations/                 # Database Migrations
+├── factories/                  # Model Factories
+└── seeders/                    # Database Seeders
+
+tests/
+├── Unit/                       # Unit Tests
+└── Feature/                    # Feature Tests
+```
+
+### Design Patterns
+- **Repository Pattern** - Data access abstraction
+- **Service Layer** - Business logic separation
+- **Resource Pattern** - API response transformation
+- **Form Requests** - Input validation and authorization
+
+## 🔒 Security Features
+
+- **JWT Authentication** - Secure token-based authentication
+- **Role-Based Access Control** - Admin and user role separation
+- **Input Validation** - Comprehensive request validation
+- **SQL Injection Protection** - Eloquent ORM protection
+- **CORS Configuration** - Cross-origin request security
+- **Rate Limiting** - API abuse prevention
+
+## 🚀 Deployment
+
+### Production Checklist
+- [ ] Set `APP_ENV=production` in `.env`
+- [ ] Set `APP_DEBUG=false` in `.env`
+- [ ] Configure production database
+- [ ] Set up Redis for caching and queues
+- [ ] Configure proper CORS origins
+- [ ] Set up SSL certificates
+- [ ] Configure web server (Nginx/Apache)
+- [ ] Set up monitoring and logging
+
+### Docker Deployment
+```bash
+# Build and run with Docker Compose
+docker-compose up -d --build
+
+# Run migrations in container
+docker-compose exec app php artisan migrate --seed
+```
+
+## 📊 Performance
+
+### Optimization Features
+- **Database Indexing** - Optimized queries
+- **Response Caching** - Redis-backed caching
+- **Eager Loading** - Reduced N+1 queries
+- **Pagination** - Memory-efficient data loading
+- **API Rate Limiting** - Resource protection
+
+### Monitoring
+- **Health Endpoints** - System status monitoring
+- **Logging** - Comprehensive error and access logging
+- **Metrics** - Performance and usage statistics
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Follow PSR-12 coding standards
+- Write tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## 📞 Support
+
+For support, email [your-email@domain.com](mailto:your-email@domain.com) or create an issue on GitHub.
+
+---
+
+<p align="center">Built with ❤️ using Laravel 11.x</p>

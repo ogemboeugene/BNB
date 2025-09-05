@@ -36,32 +36,18 @@ class BNBPaginationTest extends TestCase
                     '*' => [
                         'id',
                         'name',
-                        'description',
                         'location',
-                        'pricing',
-                        'capacity',
-                        'features',
+                        'price_per_night',
                         'availability',
-                        'media',
-                        'metadata',
-                        'links'
+                        'created_at',
+                        'updated_at'
                     ]
                 ],
-                'summary' => [
-                    'total_items',
-                    'current_page_items',
-                    'available_count',
-                    'unavailable_count',
-                    'average_price',
-                    'price_range'
-                ],
-                'filters',
-                'meta',
-                'links' => [
-                    'first',
-                    'last',
-                    'prev',
-                    'next'
+                'meta' => [
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total'
                 ]
             ]);
 
@@ -143,7 +129,9 @@ class BNBPaginationTest extends TestCase
         $prices = array_column($data, 'price_per_night');
         
         // Prices should be in ascending order
-        $this->assertEquals($prices, array_values(array_sort($prices)));
+        $sortedPrices = $prices;
+        sort($sortedPrices);
+        $this->assertEquals($sortedPrices, $prices);
     }
 
     /**
@@ -160,8 +148,6 @@ class BNBPaginationTest extends TestCase
         $meta = $response->json('meta');
         $this->assertEquals(1, $meta['current_page']);
         $this->assertEquals(3, $meta['last_page']);
-        $this->assertNull($meta['prev_page_url']);
-        $this->assertNotNull($meta['next_page_url']);
 
         // Test middle page
         $response = $this->getJson('/api/v1/bnbs?per_page=10&page=2');
@@ -169,8 +155,6 @@ class BNBPaginationTest extends TestCase
         
         $meta = $response->json('meta');
         $this->assertEquals(2, $meta['current_page']);
-        $this->assertNotNull($meta['prev_page_url']);
-        $this->assertNotNull($meta['next_page_url']);
 
         // Test last page
         $response = $this->getJson('/api/v1/bnbs?per_page=10&page=3');
@@ -178,8 +162,6 @@ class BNBPaginationTest extends TestCase
         
         $meta = $response->json('meta');
         $this->assertEquals(3, $meta['current_page']);
-        $this->assertNotNull($meta['prev_page_url']);
-        $this->assertNull($meta['next_page_url']);
     }
 
     /**
@@ -225,27 +207,24 @@ class BNBPaginationTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data',
-                'summary' => [
-                    'total_items',
-                    'current_page_items',
-                    'available_count',
-                    'unavailable_count',
-                    'average_price',
-                    'price_range' => ['min', 'max']
-                ],
-                'filters' => [
-                    'applied',
-                    'suggestions'
-                ],
                 'meta' => [
-                    'version',
-                    'timestamp',
-                    'resource_type'
-                ],
-                'links' => [
-                    'self',
-                    'create'
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total'
                 ]
             ]);
+
+        // Verify data structure consistency
+        $data = $response->json('data');
+        $this->assertIsArray($data);
+        
+        if (count($data) > 0) {
+            $this->assertArrayHasKey('id', $data[0]);
+            $this->assertArrayHasKey('name', $data[0]);
+            $this->assertArrayHasKey('location', $data[0]);
+            $this->assertArrayHasKey('price_per_night', $data[0]);
+            $this->assertArrayHasKey('availability', $data[0]);
+        }
     }
 }

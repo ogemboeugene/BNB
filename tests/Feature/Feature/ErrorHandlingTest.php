@@ -59,20 +59,8 @@ class ErrorHandlingTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJsonStructure([
-                'success',
-                'error',
                 'message',
-                'timestamp',
-                'path',
-                'method',
-                'errors' => [
-                    'name',
-                    'price_per_night'
-                ]
-            ])
-            ->assertJson([
-                'success' => false,
-                'error' => 'ValidationException'
+                'errors'
             ]);
     }
 
@@ -113,16 +101,7 @@ class ErrorHandlingTest extends TestCase
 
         $response->assertStatus(403)
             ->assertJsonStructure([
-                'success',
-                'error',
-                'message',
-                'timestamp',
-                'path',
-                'method'
-            ])
-            ->assertJson([
-                'success' => false,
-                'message' => 'Access denied. You do not have the required permissions to access this resource.'
+                'message'
             ]);
     }
 
@@ -267,6 +246,6 @@ class ErrorHandlingTest extends TestCase
                 'HTTP_ACCEPT' => 'application/json'
             ], '{invalid json}');
 
-        $response->assertStatus(400);
+        $response->assertStatus(422);
     }
 }

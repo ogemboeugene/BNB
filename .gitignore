@@ -76,3 +76,6 @@ storage/logs/*
 
 # Documentation build
 docs/_build/
+
+# Flutter integration guide (contains API keys and internal implementation details)
+FLUTTER_INTEGRATION.md

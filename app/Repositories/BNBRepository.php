@@ -335,7 +335,8 @@ class BNBRepository implements BNBRepositoryInterface
         string $sortDirection = 'desc',
         ?int $perPage = null
     ): LengthAwarePaginator {
-        $cacheKey = $this->cachePrefix . 'filtered_' . md5(serialize([$filters, $sortBy, $sortDirection, $perPage]));
+        $page = request()->get('page', 1);
+        $cacheKey = $this->cachePrefix . 'filtered_' . md5(serialize([$filters, $sortBy, $sortDirection, $perPage, $page]));
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($filters, $sortBy, $sortDirection, $perPage) {
             $query = $this->buildFilterQuery($filters)->orderBy($sortBy, $sortDirection);

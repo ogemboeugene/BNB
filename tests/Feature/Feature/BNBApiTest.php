@@ -103,6 +103,7 @@ class BNBApiTest extends TestCase
     public function test_can_delete_bnb_when_authenticated(): void
     {
         $user = User::factory()->create();
+        $user->assignRole('admin'); // Need admin role to delete
         $bnb = BNB::factory()->create();
         
         $response = $this->actingAs($user, 'sanctum')

@@ -45,37 +45,55 @@ class BNBController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        try {
-            $perPage = $request->get('per_page', 15);
-            
-            if ($perPage > 100) {
-                throw new InvalidBNBDataException(
-                    ['per_page' => ['The per page value cannot exceed 100']],
-                    'Invalid per page value'
-                );
-            }
-            
-            $bnbs = $this->bnbRepository->getWithFilters([], 'created_at', 'desc', $perPage);
+        $validated = $request->validate([
+            'per_page' => 'nullable|integer|min:1|max:100',
+            'page' => 'nullable|integer|min:1',
+            'availability' => 'nullable|in:true,false,1,0',
+            'location' => 'nullable|string|max:255',
+            'min_price' => 'nullable|numeric|min:0',
+            'max_price' => 'nullable|numeric|min:0',
+            'name' => 'nullable|string|max:100',
+            'sort_by' => 'nullable|string|in:id,name,location,price_per_night,availability,created_at,updated_at',
+            'sort_direction' => 'nullable|string|in:asc,desc',
+        ]);
 
+        $perPage = $validated['per_page'] ?? 15;
+        $sortBy = $validated['sort_by'] ?? 'created_at';
+        $sortDirection = $validated['sort_direction'] ?? 'desc';
+
+        // Build filters array
+        $filters = array_filter([
+            'availability' => isset($validated['availability']) ? filter_var($validated['availability'], FILTER_VALIDATE_BOOLEAN) : null,
+            'location' => $validated['location'] ?? null,
+            'min_price' => $validated['min_price'] ?? null,
+            'max_price' => $validated['max_price'] ?? null,
+            'name' => $validated['name'] ?? null,
+        ], function ($value) {
+            return $value !== null;
+        });
+
+        // Validate price range
+        if (isset($filters['min_price']) && isset($filters['max_price']) && 
+            $filters['min_price'] > $filters['max_price']) {
             return response()->json([
-                'data' => $bnbs->items(),
-                'meta' => [
-                    'current_page' => $bnbs->currentPage(),
-                    'last_page' => $bnbs->lastPage(),
-                    'per_page' => $bnbs->perPage(),
-                    'total' => $bnbs->total(),
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'min_price' => ['Minimum price cannot be greater than maximum price']
                 ]
-            ]);
-
-        } catch (InvalidBNBDataException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            throw new \App\Exceptions\ApiException(
-                'An error occurred while retrieving BNBs',
-                Response::HTTP_INTERNAL_SERVER_ERROR,
-                'BNB_RETRIEVAL_ERROR'
-            );
+            ], 422);
         }
+        
+        $bnbs = $this->bnbRepository->getWithFilters($filters, $sortBy, $sortDirection, $perPage);
+
+        return response()->json([
+            'data' => $bnbs->items(),
+            'meta' => [
+                'current_page' => $bnbs->currentPage(),
+                'last_page' => $bnbs->lastPage(),
+                'per_page' => $bnbs->perPage(),
+                'total' => $bnbs->total(),
+            ]
+        ]);
     }
 
     public function store(StoreBNBRequest $request): JsonResponse
