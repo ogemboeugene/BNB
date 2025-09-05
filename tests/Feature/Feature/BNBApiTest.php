@@ -22,7 +22,12 @@ class BNBApiTest extends TestCase
                 'data' => [
                     '*' => ['id', 'name', 'location', 'price_per_night', 'availability']
                 ],
-                'meta' => ['pagination']
+                'meta' => [
+                    'current_page',
+                    'last_page', 
+                    'per_page',
+                    'total'
+                ]
             ]);
     }
 
