@@ -23,13 +23,6 @@ use Symfony\Component\HttpFoundation\Response;
  * This controller follows RESTful conventions and implements proper
  * error handling, logging, and response formatting.
  * 
- * Endpoints:
- * - GET /api/v1/bnbs - List all BNBs with pagination and filtering
- * - GET /api/v1/bnbs/{id} - Get a specific BNB by ID
- * - POST /api/v1/bnbs - Create a new BNB (requires authentication)
- * - PUT /api/v1/bnbs/{id} - Update an existing BNB (requires authentication)
- * - DELETE /api/v1/bnbs/{id} - Delete a BNB (requires authentication)
- * 
  * @package App\Http\Controllers\Api\V1
  */
 class BNBController extends Controller
@@ -51,23 +44,15 @@ class BNBController extends Controller
     }
 
     /**
-     * Display a listing of BNBs.
-     * 
-     * Supports pagination, filtering, and sorting.
-     * 
-     * Query parameters:
-     * - page: Page number for pagination
-     * - per_page: Number of items per page (default: 15, max: 100)
-     * - availability: Filter by availability (true/false)
-     * - location: Filter by location (partial match)
-     * - min_price: Minimum price filter
-     * - max_price: Maximum price filter
-     * - name: Filter by name (partial match)
-     * - sort_by: Sort by field (default: created_at)
-     * - sort_direction: Sort direction (asc/desc, default: desc)
-     * 
-     * @param Request $request The HTTP request
-     * @return JsonResponse
+     * @OA\Get(
+     *     path="/bnbs",
+     *     summary="List all BNBs",
+     *     tags={"BNBs"},
+     *     @OA\Parameter(name="page", in="query", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="per_page", in="query", @OA\Schema(type="integer", maximum=100)),
+     *     @OA\Parameter(name="location", in="query", @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="List of BNBs")
+     * )
      */
     public function index(Request $request): JsonResponse
     {
