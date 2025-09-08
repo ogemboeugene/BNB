@@ -21,8 +21,8 @@
  * )
  *
  * @OA\Server(
- *     url="https://api.bnbmanagement.com/v1",
- *     description="Production Server"
+ *     url="https://bnb-backend-fpe8ejhwhah5eubp.uaenorth-01.azurewebsites.net/api/v1",
+ *     description="Azure Production Server"
  * )
  *
  * @OA\SecurityScheme(
@@ -30,7 +30,7 @@
  *     type="http",
  *     scheme="bearer",
  *     bearerFormat="JWT",
- *     description="JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token."
+ *     description="Laravel Sanctum token authentication. Get your token from /auth/login endpoint, then enter 'Bearer [your-token]' in the Authorization header."
  * )
  *
  * @OA\Tag(
