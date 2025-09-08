@@ -8,6 +8,29 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use OpenApi\Attributes as OA;
 
+/**
+ * @OA\Schema(
+ *     schema="SupportTicket",
+ *     type="object",
+ *     title="SupportTicket",
+ *     description="Support ticket model",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="user_id", type="integer", example=1),
+ *     @OA\Property(property="subject", type="string", example="Issue with booking"),
+ *     @OA\Property(property="message", type="string", example="I'm having trouble with my booking..."),
+ *     @OA\Property(property="status", type="string", enum={"open", "in_progress", "resolved", "closed"}, example="open"),
+ *     @OA\Property(property="priority", type="string", enum={"low", "medium", "high", "urgent"}, example="medium"),
+ *     @OA\Property(property="category", type="string", example="booking"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="user", type="object",
+ *         @OA\Property(property="id", type="integer", example=1),
+ *         @OA\Property(property="name", type="string", example="John Doe"),
+ *         @OA\Property(property="email", type="string", example="john@example.com")
+ *     )
+ * )
+ */
+
 class SupportTicketController extends Controller
 {
     /**

@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\V1\BNBController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\AdminController;
+use App\Http\Controllers\Api\V1\BillingController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AvailabilityController;
@@ -150,6 +152,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/dashboard/analytics', [BNBController::class, 'getAnalytics'])->name('dashboard.analytics');
         Route::get('/bnbs/{id}/analytics', [BNBController::class, 'getBnbAnalytics'])->name('bnbs.analytics');
         
+        // Billing and payment endpoints
+        Route::get('/user/bills', [BillingController::class, 'index'])->name('user.bills');
+        Route::get('/bills/{id}', [BillingController::class, 'show'])->name('bills.show');
+        Route::post('/bills/{id}/pay', [BillingController::class, 'pay'])->name('bills.pay');
+        
         // User information route
         Route::get('/user', function (Request $request) {
             return response()->json([
@@ -173,43 +180,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Admin-only BNB operations
         Route::delete('/bnbs/{id}', [BNBController::class, 'destroy'])->name('bnbs.destroy');
         
-        // Admin user management
-        Route::get('/admin/users', function (Request $request) {
-            $users = \App\Models\User::with(['tokens'])->paginate(15);
-            return \App\Http\Resources\UserResource::collection($users);
-        })->name('admin.users.index');
-        
-        Route::patch('/admin/users/{user}/role', function (Request $request, \App\Models\User $user) {
-            $validated = $request->validate([
-                'role' => 'required|string|in:admin,user'
-            ]);
-            
-            $user->assignRole($validated['role']);
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'User role updated successfully',
-                'data' => new \App\Http\Resources\UserResource($user->fresh())
-            ]);
-        })->name('admin.users.role');
-        
-        // Admin statistics
-        Route::get('/admin/stats', function () {
-            $stats = [
-                'total_users' => \App\Models\User::count(),
-                'admin_users' => \App\Models\User::admins()->count(),
-                'regular_users' => \App\Models\User::regularUsers()->count(),
-                'total_bnbs' => \App\Models\BNB::count(),
-                'active_bnbs' => \App\Models\BNB::available()->count(),
-                'inactive_bnbs' => \App\Models\BNB::unavailable()->count(),
-            ];
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Admin statistics retrieved successfully',
-                'data' => $stats
-            ]);
-        })->name('admin.stats');
+        // Admin user management routes
+        Route::get('/admin/users', [AdminController::class, 'getUsers'])->name('admin.users');
+        Route::patch('/admin/users/{user}/role', [AdminController::class, 'updateUserRole'])->name('admin.users.role');
+        Route::get('/admin/stats', [AdminController::class, 'getStats'])->name('admin.stats');
         
     });
     

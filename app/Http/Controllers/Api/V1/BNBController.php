@@ -19,6 +19,37 @@ use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
 /**
+ * @OA\Schema(
+ *     schema="BNB",
+ *     type="object",
+ *     title="BNB",
+ *     description="BNB (Bed and Breakfast) property model",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="user_id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="Cozy Downtown Loft"),
+ *     @OA\Property(property="description", type="string", example="Beautiful apartment in the heart of the city..."),
+ *     @OA\Property(property="location", type="string", example="New York, NY"),
+ *     @OA\Property(property="latitude", type="number", format="float", example=40.7589),
+ *     @OA\Property(property="longitude", type="number", format="float", example=-73.9851),
+ *     @OA\Property(property="price_per_night", type="number", format="float", example=150.00),
+ *     @OA\Property(property="max_guests", type="integer", example=4),
+ *     @OA\Property(property="bedrooms", type="integer", example=2),
+ *     @OA\Property(property="bathrooms", type="integer", example=1),
+ *     @OA\Property(property="amenities", type="array", @OA\Items(type="string", example="WiFi")),
+ *     @OA\Property(property="house_rules", type="string", example="No smoking, No pets"),
+ *     @OA\Property(property="availability", type="boolean", example=true),
+ *     @OA\Property(property="featured", type="boolean", example=false),
+ *     @OA\Property(property="average_rating", type="number", format="float", example=4.5),
+ *     @OA\Property(property="total_reviews", type="integer", example=23),
+ *     @OA\Property(property="view_count", type="integer", example=450),
+ *     @OA\Property(property="images", type="array", @OA\Items(type="string", example="https://example.com/image.jpg")),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="user", ref="#/components/schemas/User")
+ * )
+ */
+
+/**
  * Class BNBController
  * 
  * REST API controller for managing BNB (Bed and Breakfast) resources.
@@ -782,6 +813,75 @@ class BNBController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/bnbs/search/map",
+     *     operationId="getBnbsForMap",
+     *     tags={"BNBs"},
+     *     summary="Get BNBs for map display",
+     *     description="Retrieve BNBs formatted for map display with coordinates and optimized for zoom levels.",
+     *     @OA\Parameter(
+     *         name="bounds[north]",
+     *         in="query",
+     *         description="Northern boundary latitude",
+     *         required=false,
+     *         @OA\Schema(type="number", format="float", minimum=-90, maximum=90, example=40.7828)
+     *     ),
+     *     @OA\Parameter(
+     *         name="bounds[south]",
+     *         in="query",
+     *         description="Southern boundary latitude",
+     *         required=false,
+     *         @OA\Schema(type="number", format="float", minimum=-90, maximum=90, example=40.7489)
+     *     ),
+     *     @OA\Parameter(
+     *         name="bounds[east]",
+     *         in="query",
+     *         description="Eastern boundary longitude",
+     *         required=false,
+     *         @OA\Schema(type="number", format="float", minimum=-180, maximum=180, example=-73.9441)
+     *     ),
+     *     @OA\Parameter(
+     *         name="bounds[west]",
+     *         in="query",
+     *         description="Western boundary longitude",
+     *         required=false,
+     *         @OA\Schema(type="number", format="float", minimum=-180, maximum=180, example=-74.0059)
+     *     ),
+     *     @OA\Parameter(
+     *         name="zoom_level",
+     *         in="query",
+     *         description="Map zoom level (1-20) for result optimization",
+     *         required=false,
+     *         @OA\Schema(type="integer", minimum=1, maximum=20, example=12)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="BNBs for map display retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Map data retrieved successfully"),
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Cozy Downtown Loft"),
+     *                 @OA\Property(property="latitude", type="number", format="float", example=40.7589),
+     *                 @OA\Property(property="longitude", type="number", format="float", example=-73.9851),
+     *                 @OA\Property(property="price_per_night", type="number", format="float", example=150.00),
+     *                 @OA\Property(property="average_rating", type="number", format="float", example=4.5),
+     *                 @OA\Property(property="total_reviews", type="integer", example=23),
+     *                 @OA\Property(property="image_url", type="string", example="https://example.com/image.jpg")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *         )
+     *     )
+     * )
+     *
      * Get BNBs formatted for map display.
      */
     public function getForMap(Request $request): JsonResponse
@@ -838,6 +938,38 @@ class BNBController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/dashboard/analytics",
+     *     operationId="getUserAnalytics",
+     *     tags={"Analytics"},
+     *     summary="Get user dashboard analytics",
+     *     description="Retrieve analytics data for the authenticated user including BNB statistics, views, and ratings.",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Analytics data retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Analytics retrieved successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="total_bnbs", type="integer", example=5),
+     *                 @OA\Property(property="active_bnbs", type="integer", example=4),
+     *                 @OA\Property(property="total_views", type="integer", example=1250),
+     *                 @OA\Property(property="average_rating", type="number", format="float", example=4.3),
+     *                 @OA\Property(property="total_reviews", type="integer", example=87)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     *
      * Get analytics data for user dashboard.
      */
     public function getAnalytics(Request $request): JsonResponse
@@ -863,6 +995,81 @@ class BNBController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/bnbs/{id}/analytics",
+     *     operationId="getBnbAnalytics",
+     *     tags={"Analytics"},
+     *     summary="Get analytics for a specific BNB",
+     *     description="Retrieve detailed analytics data for a specific BNB property including views, bookings, ratings, and revenue metrics.",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="BNB ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="period",
+     *         in="query",
+     *         description="Analytics period",
+     *         required=false,
+     *         @OA\Schema(type="string", enum={"7days", "30days", "90days", "1year"}, example="30days")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="BNB analytics retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="BNB analytics retrieved successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="views", type="object",
+     *                     @OA\Property(property="total", type="integer", example=450),
+     *                     @OA\Property(property="period", type="integer", example=125),
+     *                     @OA\Property(property="daily_average", type="number", format="float", example=4.2)
+     *                 ),
+     *                 @OA\Property(property="bookings", type="object",
+     *                     @OA\Property(property="total", type="integer", example=23),
+     *                     @OA\Property(property="period", type="integer", example=8),
+     *                     @OA\Property(property="conversion_rate", type="number", format="float", example=6.4)
+     *                 ),
+     *                 @OA\Property(property="ratings", type="object",
+     *                     @OA\Property(property="average", type="number", format="float", example=4.7),
+     *                     @OA\Property(property="total_reviews", type="integer", example=19),
+     *                     @OA\Property(property="rating_distribution", type="object",
+     *                         @OA\Property(property="5", type="integer", example=12),
+     *                         @OA\Property(property="4", type="integer", example=5),
+     *                         @OA\Property(property="3", type="integer", example=2),
+     *                         @OA\Property(property="2", type="integer", example=0),
+     *                         @OA\Property(property="1", type="integer", example=0)
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="revenue", type="object",
+     *                     @OA\Property(property="total", type="number", format="float", example=3450.00),
+     *                     @OA\Property(property="period", type="number", format="float", example=1200.00),
+     *                     @OA\Property(property="average_per_booking", type="number", format="float", example=150.00)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="BNB not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="BNB not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Access denied - User doesn't own this BNB",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Access denied")
+     *         )
+     *     )
+     * )
+     *
      * Get analytics for a specific BNB.
      */
     public function getBnbAnalytics(Request $request, $id): JsonResponse

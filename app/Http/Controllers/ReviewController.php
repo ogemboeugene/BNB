@@ -9,6 +9,33 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use OpenApi\Attributes as OA;
 
+/**
+ * @OA\Schema(
+ *     schema="Review",
+ *     type="object",
+ *     title="Review",
+ *     description="Review model",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="user_id", type="integer", example=1),
+ *     @OA\Property(property="bnb_id", type="integer", example=1),
+ *     @OA\Property(property="rating", type="integer", minimum=1, maximum=5, example=5),
+ *     @OA\Property(property="comment", type="string", example="Amazing place to stay!"),
+ *     @OA\Property(property="is_verified", type="boolean", example=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="user", type="object",
+ *         @OA\Property(property="id", type="integer", example=1),
+ *         @OA\Property(property="name", type="string", example="John Doe"),
+ *         @OA\Property(property="email", type="string", example="john@example.com")
+ *     ),
+ *     @OA\Property(property="bnb", type="object",
+ *         @OA\Property(property="id", type="integer", example=1),
+ *         @OA\Property(property="title", type="string", example="Beautiful Beach House"),
+ *         @OA\Property(property="location", type="string", example="Miami, FL")
+ *     )
+ * )
+ */
+
 class ReviewController extends Controller
 {
     /**

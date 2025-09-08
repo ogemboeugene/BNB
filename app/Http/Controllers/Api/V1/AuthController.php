@@ -16,6 +16,22 @@ use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
 /**
+ * @OA\Schema(
+ *     schema="User",
+ *     type="object",
+ *     title="User",
+ *     description="User model",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+ *     @OA\Property(property="role", type="string", enum={"admin", "user"}, example="user"),
+ *     @OA\Property(property="email_verified_at", type="string", format="date-time", nullable=true, example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-09-08T10:00:00.000000Z")
+ * )
+ */
+
+/**
  * Class AuthController
  * 
  * Handles user authentication operations including registration, login,
@@ -300,6 +316,36 @@ class AuthController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/auth/refresh",
+     *     operationId="refreshToken",
+     *     tags={"Authentication"},
+     *     summary="Refresh authentication token",
+     *     description="Refresh the current authentication token. The old token will be invalidated.",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Token refreshed successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="access_token", type="string", example="2|abcdef123456..."),
+     *                 @OA\Property(property="token_type", type="string", example="Bearer"),
+     *                 @OA\Property(property="user", ref="#/components/schemas/User")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Invalid or expired token",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     *
      * Refresh user token.
      * 
      * @param Request $request

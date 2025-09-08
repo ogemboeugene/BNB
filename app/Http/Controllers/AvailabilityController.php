@@ -10,9 +10,81 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use OpenApi\Attributes as OA;
 
+/**
+ * Class AvailabilityController
+ * 
+ * Handles availability and calendar management for BNB properties.
+ * Provides endpoints for checking availability, managing booking calendars,
+ * and setting price overrides for specific dates.
+ * 
+ * @package App\Http\Controllers
+ */
+#[OA\Tag(
+    name: 'Availability',
+    description: 'Calendar and availability management endpoints'
+)]
 class AvailabilityController extends Controller
 {
     /**
+     * @OA\Get(
+     *     path="/bnbs/{bnb}/availability",
+     *     operationId="getBNBAvailabilityCalendar",
+     *     tags={"Availability"},
+     *     summary="Get availability calendar",
+     *     description="Get availability calendar for a date range with pricing information.",
+     *     @OA\Parameter(
+     *         name="bnb",
+     *         in="path",
+     *         description="BNB property ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="start_date",
+     *         in="query",
+     *         description="Start date for calendar",
+     *         required=true,
+     *         @OA\Schema(type="string", format="date", example="2025-12-01")
+     *     ),
+     *     @OA\Parameter(
+     *         name="end_date",
+     *         in="query",
+     *         description="End date for calendar",
+     *         required=true,
+     *         @OA\Schema(type="string", format="date", example="2025-12-31")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Availability calendar retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Availability calendar retrieved successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="bnb", type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Downtown Apartment"),
+     *                     @OA\Property(property="default_price", type="string", example="150.00"),
+     *                     @OA\Property(property="default_availability", type="boolean", example=true)
+     *                 ),
+     *                 @OA\Property(property="calendar", type="array", @OA\Items(
+     *                     @OA\Property(property="date", type="string", format="date", example="2025-12-01"),
+     *                     @OA\Property(property="is_available", type="boolean", example=true),
+     *                     @OA\Property(property="price_override", type="number", format="float", nullable=true, example=null),
+     *                     @OA\Property(property="effective_price", type="string", example="150.00")
+     *                 ))
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="BNB not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="BNB not found")
+     *         )
+     *     )
+     * )
+     *
      * Get availability calendar for a BNB.
      */
     public function index(Request $request, $bnbId): JsonResponse
@@ -66,6 +138,56 @@ class AvailabilityController extends Controller
     }
 
     /**
+     * @OA\Patch(
+     *     path="/bnbs/{bnb}/availability/update",
+     *     operationId="updateBNBAvailability",
+     *     tags={"Availability"},
+     *     summary="Update availability for dates",
+     *     description="Update availability and pricing for specific dates (property owners only).",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="bnb",
+     *         in="path",
+     *         description="BNB property ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"dates"},
+     *             @OA\Property(property="dates", type="array", @OA\Items(
+     *                 required={"date", "is_available"},
+     *                 @OA\Property(property="date", type="string", format="date", example="2025-12-25"),
+     *                 @OA\Property(property="is_available", type="boolean", example=true),
+     *                 @OA\Property(property="price_override", type="number", format="float", nullable=true, example=200.00)
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Availability updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Availability updated successfully"),
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="date", type="string", format="date", example="2025-12-25"),
+     *                 @OA\Property(property="is_available", type="boolean", example=true),
+     *                 @OA\Property(property="price_override", type="number", format="float", example=200.00),
+     *                 @OA\Property(property="effective_price", type="string", example="200.00")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
+     * )
+     *
      * Update availability for specific dates.
      */
     public function update(Request $request, $bnbId): JsonResponse
@@ -233,6 +355,51 @@ class AvailabilityController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/bnbs/{bnb}/availability/block",
+     *     operationId="blockBNBDates",
+     *     tags={"Availability"},
+     *     summary="Block dates",
+     *     description="Block multiple dates at once making them unavailable for booking.",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="bnb",
+     *         in="path",
+     *         description="BNB property ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"start_date", "end_date"},
+     *             @OA\Property(property="start_date", type="string", format="date", example="2025-12-24"),
+     *             @OA\Property(property="end_date", type="string", format="date", example="2025-12-26"),
+     *             @OA\Property(property="reason", type="string", nullable=true, example="Holiday period - not available")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dates blocked successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Dates blocked successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="blocked_dates", type="array", @OA\Items(type="string", format="date", example="2025-12-24")),
+     *                 @OA\Property(property="reason", type="string", example="Holiday period - not available")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="BNB not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="BNB not found")
+     *         )
+     *     )
+     * )
+     *
      * Block dates (make unavailable).
      */
     public function blockDates(Request $request, $bnbId): JsonResponse
