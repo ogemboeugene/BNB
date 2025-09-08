@@ -26,9 +26,12 @@ Homestead.yaml
 Thumbs.db
 
 # Database files
-database/database.sqlite
-*.sqlite
-*.db
+# database/database.sqlite (commented out to allow pushing to Azure)
+# *.sqlite (commented out to allow pushing to Azure)
+# *.db (commented out to allow pushing to Azure)
+
+# Allow specific database files for deployment
+!database/database.sqlite
 
 # Logs and temporary files
 storage/logs/*.log
