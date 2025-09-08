@@ -426,4 +426,25 @@ class BNBRepository implements BNBRepositoryInterface
             // In production, you might want to implement a more granular cache invalidation strategy
         }
     }
+
+    /**
+     * Get featured BNBs.
+     * 
+     * @return Collection
+     */
+    public function getFeatured(): Collection
+    {
+        $cacheKey = $this->cachePrefix . 'featured';
+        
+        return Cache::remember($cacheKey, $this->cacheTtl, function () {
+            Log::info('Fetching featured BNBs from database');
+            
+            return $this->model
+                ->where('featured', true)
+                ->where('availability', true)
+                ->orderBy('average_rating', 'desc')
+                ->orderBy('total_reviews', 'desc')
+                ->get();
+        });
+    }
 }

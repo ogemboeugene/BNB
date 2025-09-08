@@ -65,6 +65,7 @@ class BNB extends Model
         'price_per_night',
         'availability',
         'image_url',
+        'featured',
     ];
 
     /**

@@ -84,6 +84,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     | They are used for browsing and viewing BNB listings.
     */
     Route::get('/bnbs', [BNBController::class, 'index'])->name('bnbs.index');
+    Route::get('/bnbs/featured', [BNBController::class, 'featured'])->name('bnbs.featured');
     Route::get('/bnbs/search/nearby', [BNBController::class, 'searchNearby'])->name('bnbs.search.nearby');
     Route::get('/bnbs/search/map', [BNBController::class, 'getForMap'])->name('bnbs.search.map');
     Route::get('/bnbs/{id}', [BNBController::class, 'show'])->name('bnbs.show');

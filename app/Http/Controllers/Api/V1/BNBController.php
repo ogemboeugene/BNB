@@ -895,4 +895,69 @@ class BNBController extends Controller
             'data' => $analytics,
         ]);
     }
+
+    /**
+     * Get featured BNBs.
+     * 
+     * @return JsonResponse
+     */
+    #[OA\Get(
+        path: '/api/v1/bnbs/featured',
+        summary: 'Get featured BNBs',
+        description: 'Retrieve a list of featured BNB properties that are highlighted on the platform',
+        tags: ['BNBs'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Featured BNBs retrieved successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
+                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Featured BNBs retrieved successfully'),
+                        'data' => new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/BNB')
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'No featured BNBs found',
+                content: new OA\JsonContent(
+                    properties: [
+                        'success' => new OA\Property(property: 'success', type: 'boolean', example: false),
+                        'message' => new OA\Property(property: 'message', type: 'string', example: 'No featured BNBs available at the moment')
+                    ]
+                )
+            )
+        ]
+    )]
+    public function featured(): JsonResponse
+    {
+        try {
+            $featuredBnbs = $this->bnbRepository->getFeatured();
+            
+            if ($featuredBnbs->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No featured BNBs available at the moment'
+                ], 422);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Featured BNBs retrieved successfully',
+                'data' => BNBResource::collection($featuredBnbs)
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error retrieving featured BNBs: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while retrieving featured BNBs'
+            ], 500);
+        }
+    }
 }

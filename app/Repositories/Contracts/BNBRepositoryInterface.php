@@ -143,4 +143,11 @@ interface BNBRepositoryInterface
      * @return int
      */
     public function count(array $filters = []): int;
+
+    /**
+     * Get featured BNBs.
+     * 
+     * @return Collection
+     */
+    public function getFeatured(): Collection;
 }
