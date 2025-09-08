@@ -29,12 +29,17 @@ return [
         'https://bnb-frontend.vercel.app',
         'https://*.netlify.app',
         'https://*.herokuapp.com',
+        'https://cm31hz80-8000.uks1.devtunnels.ms',
+        'https://3a3b2bcb1e34.ngrok-free.app',
     ],
 
     'allowed_origins_patterns' => [
         '/^https:\/\/.*\.vercel\.app$/',
         '/^https:\/\/.*\.netlify\.app$/',
         '/^https:\/\/.*\.surge\.sh$/',
+        '/^https:\/\/.*\.devtunnels\.ms$/',
+        '/^https:\/\/.*\.ngrok-free\.app$/',
+        '/^https:\/\/.*\.ngrok\.io$/',
     ],
 
     'allowed_headers' => ['*'],

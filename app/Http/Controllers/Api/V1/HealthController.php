@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
+use OpenApi\Attributes as OA;
 
 /**
  * Class HealthController
@@ -16,6 +17,10 @@ use Symfony\Component\HttpFoundation\Response;
  * 
  * @package App\Http\Controllers\Api\V1
  */
+#[OA\Tag(
+    name: 'Health Check',
+    description: 'System health monitoring endpoints'
+)]
 class HealthController extends Controller
 {
     /**
@@ -26,6 +31,26 @@ class HealthController extends Controller
      * 
      * @return JsonResponse
      */
+    #[OA\Get(
+        path: '/health',
+        summary: 'Basic health check',
+        description: 'Simple health check endpoint for load balancers and monitoring',
+        tags: ['Health Check'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'API is operational',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'ok'),
+                        new OA\Property(property: 'message', type: 'string', example: 'BNB Management API is operational'),
+                        new OA\Property(property: 'timestamp', type: 'string', format: 'date-time', example: '2025-09-05T12:00:00.000000Z'),
+                        new OA\Property(property: 'version', type: 'string', example: 'v1')
+                    ]
+                )
+            )
+        ]
+    )]
     public function check(): JsonResponse
     {
         return response()->json([

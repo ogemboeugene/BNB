@@ -3,6 +3,9 @@
 use App\Http\Controllers\Api\V1\BNBController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AvailabilityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +47,36 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     
     /*
     |--------------------------------------------------------------------------
+    | Test Routes (Development Only)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/test-cloudinary', function () {
+        try {
+            return response()->json([
+                'success' => true,
+                'message' => 'Cloudinary configuration test',
+                'config' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key' => config('cloudinary.api_key'),
+                    'api_secret_set' => !empty(config('cloudinary.api_secret')),
+                    'url_set' => !empty(config('cloudinary.cloudinary_url')),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'config' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key' => config('cloudinary.api_key'),
+                    'api_secret_set' => !empty(config('cloudinary.api_secret')),
+                ],
+            ], 500);
+        }
+    })->name('test.cloudinary');
+    
+    /*
+    |--------------------------------------------------------------------------
     | Public BNB Routes
     |--------------------------------------------------------------------------
     | 
@@ -51,7 +84,14 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     | They are used for browsing and viewing BNB listings.
     */
     Route::get('/bnbs', [BNBController::class, 'index'])->name('bnbs.index');
+    Route::get('/bnbs/search/nearby', [BNBController::class, 'searchNearby'])->name('bnbs.search.nearby');
+    Route::get('/bnbs/search/map', [BNBController::class, 'getForMap'])->name('bnbs.search.map');
     Route::get('/bnbs/{id}', [BNBController::class, 'show'])->name('bnbs.show');
+    Route::get('/bnbs/{id}/reviews', [\App\Http\Controllers\ReviewController::class, 'index'])->name('bnbs.reviews.index');
+    
+    // Public availability endpoints
+    Route::get('/bnbs/{bnb}/availability', [AvailabilityController::class, 'index'])->name('bnbs.availability.public');
+    Route::post('/bnbs/{bnb}/availability/check', [AvailabilityController::class, 'checkAvailability'])->name('bnbs.availability.check.public');
     
     /*
     |--------------------------------------------------------------------------
@@ -70,6 +110,44 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         
         // Additional BNB operations (authenticated users)
         Route::patch('/bnbs/{id}/availability', [BNBController::class, 'updateAvailability'])->name('bnbs.availability');
+        
+        // Review endpoints (authenticated)
+        Route::post('/bnbs/{id}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('bnbs.reviews.store');
+        Route::put('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'update'])->name('reviews.update');
+        Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
+        
+        // Notification endpoints
+        Route::get('/notifications', function(Request $request) {
+            return response()->json([
+                'success' => true,
+                'data' => auth()->user()->notifications()->latest()->paginate(15),
+            ]);
+        })->name('notifications.index');
+        
+        Route::patch('/notifications/{id}/mark-read', function(Request $request, $id) {
+            $notification = auth()->user()->notifications()->findOrFail($id);
+            $notification->update(['is_read' => true, 'read_at' => now()]);
+            return response()->json(['success' => true, 'message' => 'Notification marked as read']);
+        })->name('notifications.mark-read');
+        
+        Route::delete('/notifications/{id}', function(Request $request, $id) {
+            auth()->user()->notifications()->findOrFail($id)->delete();
+            return response()->json(['success' => true, 'message' => 'Notification deleted']);
+        })->name('notifications.delete');
+        
+        // Support ticket endpoints
+        Route::get('/support/tickets', [\App\Http\Controllers\SupportTicketController::class, 'index'])->name('support.tickets.index');
+        Route::post('/support/tickets', [\App\Http\Controllers\SupportTicketController::class, 'store'])->name('support.tickets.store');
+        Route::get('/support/tickets/{ticket}', [\App\Http\Controllers\SupportTicketController::class, 'show'])->name('support.tickets.show');
+        Route::patch('/support/tickets/{ticket}', [\App\Http\Controllers\SupportTicketController::class, 'update'])->name('support.tickets.update');
+        
+        // Availability management endpoints (for property owners)
+        Route::patch('/bnbs/{bnb}/availability/update', [AvailabilityController::class, 'update'])->name('bnbs.availability.update');
+        Route::post('/bnbs/{bnb}/availability/block', [AvailabilityController::class, 'blockDates'])->name('bnbs.availability.block');
+        
+        // Analytics and dashboard endpoints
+        Route::get('/dashboard/analytics', [BNBController::class, 'getAnalytics'])->name('dashboard.analytics');
+        Route::get('/bnbs/{id}/analytics', [BNBController::class, 'getBnbAnalytics'])->name('bnbs.analytics');
         
         // User information route
         Route::get('/user', function (Request $request) {

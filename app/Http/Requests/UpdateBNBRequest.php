@@ -74,6 +74,14 @@ class UpdateBNBRequest extends FormRequest
                 'sometimes',
                 'boolean',
             ],
+            'image' => [
+                'sometimes',
+                'file',
+                'image',
+                'mimes:jpeg,jpg,png,webp,gif',
+                'max:10240', // 10MB in kilobytes
+                'dimensions:min_width=200,min_height=200,max_width=4000,max_height=4000',
+            ],
         ];
     }
 
@@ -105,6 +113,12 @@ class UpdateBNBRequest extends FormRequest
             'price_per_night.decimal' => 'The price per night can have at most 2 decimal places.',
             
             'availability.boolean' => 'The availability must be true or false.',
+            
+            'image.file' => 'The image must be a valid file.',
+            'image.image' => 'The image must be a valid image file.',
+            'image.mimes' => 'The image must be a file of type: jpeg, jpg, png, webp, gif.',
+            'image.max' => 'The image size cannot exceed 10MB.',
+            'image.dimensions' => 'The image dimensions must be between 200x200 and 4000x4000 pixels.',
         ];
     }
 
@@ -122,6 +136,7 @@ class UpdateBNBRequest extends FormRequest
             'location' => 'location',
             'price_per_night' => 'price per night',
             'availability' => 'availability status',
+            'image' => 'image',
         ];
     }
 

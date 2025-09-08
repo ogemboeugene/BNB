@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use OpenApi\Attributes as OA;
 
 /**
  * Class AuthController
@@ -22,6 +23,10 @@ use Symfony\Component\HttpFoundation\Response;
  * 
  * @package App\Http\Controllers\Api\V1
  */
+#[OA\Tag(
+    name: 'Authentication',
+    description: 'User authentication and authorization endpoints'
+)]
 class AuthController extends Controller
 {
     use ApiResponseTrait;
@@ -31,6 +36,49 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    #[OA\Post(
+        path: '/auth/register',
+        summary: 'Register a new user',
+        description: 'Create a new user account and return authentication token',
+        tags: ['Authentication'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['name', 'email', 'password', 'password_confirmation'],
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', maxLength: 255, example: 'John Doe'),
+                    new OA\Property(property: 'email', type: 'string', format: 'email', maxLength: 255, example: 'john@example.com'),
+                    new OA\Property(property: 'password', type: 'string', minLength: 8, example: 'password123'),
+                    new OA\Property(property: 'password_confirmation', type: 'string', minLength: 8, example: 'password123'),
+                    new OA\Property(property: 'role', type: 'string', enum: ['admin', 'user'], default: 'user', example: 'user')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'User registered successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'User registered successfully'),
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'user', ref: '#/components/schemas/User'),
+                                new OA\Property(property: 'access_token', type: 'string', example: '1|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'),
+                                new OA\Property(property: 'token_type', type: 'string', example: 'Bearer'),
+                                new OA\Property(property: 'expires_in', type: 'integer', example: 2592000)
+                            ],
+                            type: 'object'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 422, description: 'Validation error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+            new OA\Response(response: 500, description: 'Registration failed', content: new OA\JsonContent(ref: '#/components/schemas/Error'))
+        ]
+    )]
     public function register(Request $request): JsonResponse
     {
         try {
@@ -94,6 +142,47 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    #[OA\Post(
+        path: '/auth/login',
+        summary: 'User login',
+        description: 'Authenticate user and return access token',
+        tags: ['Authentication'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email', 'password'],
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
+                    new OA\Property(property: 'password', type: 'string', example: 'password123'),
+                    new OA\Property(property: 'remember', type: 'boolean', default: false, example: false)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Login successful',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Login successful'),
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'user', ref: '#/components/schemas/User'),
+                                new OA\Property(property: 'access_token', type: 'string', example: '2|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'),
+                                new OA\Property(property: 'token_type', type: 'string', example: 'Bearer'),
+                                new OA\Property(property: 'expires_in', type: 'integer', example: 86400)
+                            ],
+                            type: 'object'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Invalid credentials', content: new OA\JsonContent(ref: '#/components/schemas/Error')),
+            new OA\Response(response: 422, description: 'Validation error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError'))
+        ]
+    )]
     public function login(Request $request): JsonResponse
     {
         try {
@@ -159,6 +248,27 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    #[OA\Post(
+        path: '/auth/logout',
+        summary: 'User logout',
+        description: 'Logout user and revoke access token',
+        security: [['sanctum' => []]],
+        tags: ['Authentication'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Logged out successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Logged out successfully')
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(ref: '#/components/schemas/Error')),
+            new OA\Response(response: 500, description: 'Logout failed', content: new OA\JsonContent(ref: '#/components/schemas/Error'))
+        ]
+    )]
     public function logout(Request $request): JsonResponse
     {
         try {
@@ -242,6 +352,34 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    #[OA\Get(
+        path: '/auth/profile',
+        summary: 'Get user profile',
+        description: 'Retrieve authenticated user profile information',
+        security: [['sanctum' => []]],
+        tags: ['Authentication'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'User profile retrieved successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'User profile retrieved successfully'),
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'user', ref: '#/components/schemas/User')
+                            ],
+                            type: 'object'
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated', content: new OA\JsonContent(ref: '#/components/schemas/Error')),
+            new OA\Response(response: 500, description: 'Profile retrieval failed', content: new OA\JsonContent(ref: '#/components/schemas/Error'))
+        ]
+    )]
     public function profile(Request $request): JsonResponse
     {
         try {

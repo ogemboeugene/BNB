@@ -28,18 +28,14 @@ class BNBResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'location' => [
-                'address' => $this->address,
-                'city' => $this->city,
-                'state' => $this->state,
-                'country' => $this->country,
-                'postal_code' => $this->postal_code,
+                'address' => $this->location,
                 'latitude' => $this->latitude,
                 'longitude' => $this->longitude,
             ],
             'pricing' => [
                 'price_per_night' => $this->price_per_night,
-                'currency' => $this->currency ?? 'USD',
-                'formatted_price' => $this->getFormattedPrice(),
+                'currency' => 'USD',
+                'formatted_price' => '$' . number_format($this->price_per_night, 2),
             ],
             'capacity' => [
                 'bedrooms' => $this->bedrooms,
@@ -47,29 +43,30 @@ class BNBResource extends JsonResource
                 'max_guests' => $this->max_guests,
             ],
             'features' => [
-                'amenities' => $this->amenities ? json_decode($this->amenities, true) : [],
-                'house_rules' => $this->house_rules ? json_decode($this->house_rules, true) : [],
+                'amenities' => $this->amenities ?? [],
             ],
             'availability' => [
-                'is_available' => $this->is_available,
-                'available_from' => $this->available_from?->toISOString(),
-                'available_to' => $this->available_to?->toISOString(),
-                'status' => $this->getAvailabilityStatus(),
+                'is_available' => $this->availability,
+                'status' => $this->availability ? 'available' : 'unavailable',
+            ],
+            'rating' => [
+                'average_rating' => $this->average_rating,
+                'total_reviews' => $this->total_reviews,
             ],
             'media' => [
-                'images' => $this->images ? json_decode($this->images, true) : [],
-                'main_image' => $this->getMainImage(),
+                'image_url' => $this->image_url,
+            ],
+            'stats' => [
+                'view_count' => $this->view_count,
             ],
             'metadata' => [
                 'created_at' => $this->created_at->toISOString(),
                 'updated_at' => $this->updated_at->toISOString(),
                 'last_modified' => $this->updated_at->diffForHumans(),
-                'is_featured' => $this->is_featured ?? false,
             ],
             'links' => [
                 'self' => route('api.v1.bnbs.show', $this->id),
                 'update' => route('api.v1.bnbs.update', $this->id),
-                'delete' => route('api.v1.bnbs.destroy', $this->id),
             ],
         ];
     }

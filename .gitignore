@@ -79,3 +79,6 @@ docs/_build/
 
 # Flutter integration guide (contains API keys and internal implementation details)
 FLUTTER_INTEGRATION.md
+
+# Frontend integration guide (contains internal implementation details)
+additions.md
