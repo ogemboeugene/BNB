@@ -439,12 +439,33 @@ class BNBRepository implements BNBRepositoryInterface
         return Cache::remember($cacheKey, $this->cacheTtl, function () {
             Log::info('Fetching featured BNBs from database');
             
-            return $this->model
-                ->where('featured', true)
-                ->where('availability', true)
-                ->orderBy('average_rating', 'desc')
-                ->orderBy('total_reviews', 'desc')
-                ->get();
+            try {
+                // Check if featured column exists
+                $hasFeatureColumn = \Schema::hasColumn('bnbs', 'featured');
+                
+                if ($hasFeatureColumn) {
+                    return $this->model
+                        ->where('featured', true)
+                        ->where('availability', true)
+                        ->orderBy('average_rating', 'desc')
+                        ->orderBy('total_reviews', 'desc')
+                        ->limit(10)
+                        ->get();
+                } else {
+                    // Fallback: return top-rated available BNBs
+                    Log::warning('Featured column not found, returning top-rated BNBs as featured');
+                    return $this->model
+                        ->where('availability', true)
+                        ->orderBy('average_rating', 'desc')
+                        ->orderBy('total_reviews', 'desc')
+                        ->limit(10)
+                        ->get();
+                }
+            } catch (\Exception $e) {
+                Log::error('Error fetching featured BNBs: ' . $e->getMessage());
+                // Return empty collection on error
+                return collect();
+            }
         });
     }
 }

@@ -15,7 +15,7 @@ use OpenApi\Attributes as OA;
  *     description="Local Development Server"
  * )
  * @OA\Server(
- *     url="https://3a3b2bcb1e34.ngrok-free.app/api/v1",
+ *     url="https://f590492a3ec0.ngrok-free.app/api/v1",
  *     description="Public Tunnel (ngrok)"
  * )
  * @OA\SecurityScheme(

@@ -30,7 +30,7 @@ return [
         'https://*.netlify.app',
         'https://*.herokuapp.com',
         'https://cm31hz80-8000.uks1.devtunnels.ms',
-        'https://3a3b2bcb1e34.ngrok-free.app',
+        'https://f590492a3ec0.ngrok-free.app',
     ],
 
     'allowed_origins_patterns' => [

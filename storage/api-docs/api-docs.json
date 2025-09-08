@@ -11,7 +11,7 @@
             "description": "Local Development Server"
         },
         {
-            "url": "https://3a3b2bcb1e34.ngrok-free.app/api/v1",
+            "url": "https://f590492a3ec0.ngrok-free.app/api/v1",
             "description": "Public Tunnel (ngrok)"
         }
     ],
@@ -2713,7 +2713,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/bnbs/{bnb}/availability/update": {
@@ -3013,7 +3018,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/bnbs/{bnb}/availability/block": {
@@ -3243,7 +3253,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -3646,6 +3661,113 @@
     },
     "components": {
         "schemas": {
+            "Bill": {
+                "title": "Bill",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "booking_reference": {
+                        "type": "string",
+                        "example": "BK-20250908-001"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "bnb_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "amount": {
+                        "type": "string",
+                        "example": "450.00"
+                    },
+                    "tax_amount": {
+                        "type": "string",
+                        "example": "67.50"
+                    },
+                    "total_amount": {
+                        "type": "string",
+                        "example": "517.50"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "USD"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "paid",
+                            "cancelled",
+                            "refunded"
+                        ],
+                        "example": "paid"
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "example": "Credit Card"
+                    },
+                    "transaction_id": {
+                        "type": "string",
+                        "example": "txn_1234567890"
+                    },
+                    "check_in_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-08-15"
+                    },
+                    "check_out_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-08-18"
+                    },
+                    "nights": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "guests": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "paid_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-10T14:30:00.000000Z",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-10T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-10T14:30:00.000000Z"
+                    },
+                    "bnb": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Downtown Apartment"
+                            },
+                            "location": {
+                                "type": "string",
+                                "example": "New York, NY"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "BNB": {
                 "properties": {
                     "id": {
@@ -3944,92 +4066,6 @@
                         "type": "object"
                     }
                 ]
-            },
-            "Bill": {
-                "title": "Bill",
-                "description": "Billing/Payment record model",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "user_id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "bnb_id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "booking_reference": {
-                        "type": "string",
-                        "example": "BK-20250908-001"
-                    },
-                    "amount": {
-                        "type": "number",
-                        "format": "float",
-                        "example": 450
-                    },
-                    "currency": {
-                        "type": "string",
-                        "example": "USD"
-                    },
-                    "status": {
-                        "type": "string",
-                        "enum": [
-                            "pending",
-                            "paid",
-                            "cancelled",
-                            "refunded"
-                        ],
-                        "example": "paid"
-                    },
-                    "payment_method": {
-                        "type": "string",
-                        "example": "credit_card"
-                    },
-                    "payment_date": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-09-08T14:30:00.000000Z",
-                        "nullable": true
-                    },
-                    "check_in": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2025-09-15"
-                    },
-                    "check_out": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2025-09-18"
-                    },
-                    "nights": {
-                        "type": "integer",
-                        "example": 3
-                    },
-                    "guests": {
-                        "type": "integer",
-                        "example": 2
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-09-08T10:00:00.000000Z"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-09-08T10:00:00.000000Z"
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    "bnb": {
-                        "$ref": "#/components/schemas/BNB"
-                    }
-                },
-                "type": "object"
             }
         },
         "securitySchemes": {

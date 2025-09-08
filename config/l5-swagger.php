@@ -44,7 +44,7 @@ return [
                  * Absolute paths to directory containing the swagger annotations are stored.
                  */
                 'annotations' => [
-                    base_path('app'),
+                    base_path('app/Http/Controllers'),
                 ],
             ],
         ],
@@ -65,9 +65,9 @@ return [
              * Middleware allows to prevent unexpected access to API documentation
              */
             'middleware' => [
-                'api' => [],
-                'asset' => [],
-                'docs' => [],
+                'api' => ['swagger'],
+                'asset' => ['swagger'],
+                'docs' => ['swagger'],
                 'oauth2_callback' => [],
             ],
 
@@ -156,7 +156,13 @@ return [
              * @note This option overwrites `paths.excludes`
              * @see \OpenApi\scan
              */
-            'exclude' => [],
+            'exclude' => [
+                base_path('vendor'),
+                base_path('storage'),
+                base_path('bootstrap/cache'),
+                base_path('node_modules'),
+                base_path('tests'),
+            ],
 
             /*
              * Allows to generate specs either for OpenAPI 3.0.0 or OpenAPI 3.1.0.

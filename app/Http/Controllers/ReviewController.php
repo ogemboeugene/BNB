@@ -45,6 +45,7 @@ class ReviewController extends Controller
      *     tags={"Reviews"},
      *     summary="Get reviews for a specific BNB",
      *     description="Retrieve paginated reviews for a BNB property with user information and BNB details.",
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

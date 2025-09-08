@@ -10,6 +10,14 @@
 
 A professional, production-ready Laravel API for managing Bed & Breakfast (BNB) properties. Built with modern Laravel practices, comprehensive testing, and designed for seamless integration with mobile and web applications.
 
+## 🌐 Live Deployment
+
+**Production API:** https://bnb-backend-fpe8ejhwhah5eubp.uaenorth-01.azurewebsites.net/api/v1/
+
+**API Documentation:** https://bnb-backend-fpe8ejhwhah5eubp.uaenorth-01.azurewebsites.net/api/documentation
+
+The API is deployed on Azure App Service with automated CI/CD via GitHub Actions.
+
 ## 🚀 Features
 
 ### Core API Features

@@ -53,6 +53,7 @@ class BNB extends Model
      * which fields can be mass assigned to prevent mass assignment vulnerabilities.
      */
     protected $fillable = [
+        'user_id',
         'name',
         'location',
         'latitude',
@@ -64,6 +65,9 @@ class BNB extends Model
         'bathrooms',
         'price_per_night',
         'availability',
+        'average_rating',
+        'total_reviews',
+        'view_count',
         'image_url',
         'featured',
     ];
@@ -111,6 +115,14 @@ class BNB extends Model
         'total_reviews' => 0,
         'view_count' => 0,
     ];
+
+    /**
+     * Define relationship with the user/owner.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Define relationship with reviews.

@@ -32,6 +32,7 @@ class AvailabilityController extends Controller
      *     tags={"Availability"},
      *     summary="Get availability calendar",
      *     description="Get availability calendar for a date range with pricing information.",
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="bnb",
      *         in="path",
@@ -245,6 +246,7 @@ class AvailabilityController extends Controller
      *     tags={"Availability"},
      *     summary="Check availability for date range",
      *     description="Check if a BNB is available for specific dates and get pricing breakdown.",
+     *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="bnb",
      *         in="path",
